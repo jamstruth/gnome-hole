@@ -14,7 +14,7 @@ function gnomeOccurrence(gnomeChance: number) {
 }
 
 function displayGnome(timerFinished: boolean, gnomeChance: number) {
-    return timerFinished;
+    return timerFinished && gnomeOccurrence(gnomeChance);
 }
 
 export function GnomeHole({
@@ -45,11 +45,7 @@ export function GnomeHole({
 
     return (
         <Card>
-            { displayGnome(timerFinished, gnomeChance) && 
-                <CardContent>
-                    GNOME OCCURENCE!!!
-                </CardContent>
-            }
+            { content }
         </Card>
     )
 }
