@@ -4,10 +4,10 @@ import { useTimer } from 'react-timer-hook';
 
 interface TimerProps {
     timerLength: number;
-    timerTrigger: Function;
+    timerTrigger: () => any;
 }
 
-export function Timer({timerLength}:TimerProps) {
+export function Timer({timerLength, timerTrigger}:TimerProps) {
 
     const expiryTimestamp = new Date();
 
@@ -15,7 +15,7 @@ export function Timer({timerLength}:TimerProps) {
 
     const {
         seconds,
-    } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called') });
+    } = useTimer({ expiryTimestamp, onExpire: timerTrigger });
     
 
     return (
