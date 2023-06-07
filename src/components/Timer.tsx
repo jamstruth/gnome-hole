@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { useTimer } from 'react-timer-hook';
@@ -9,20 +10,39 @@ interface TimerProps {
 
 export function Timer({timerLength, timerTrigger}:TimerProps) {
 
-    const expiryTimestamp = new Date();
-
-    expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + timerLength);
+    function getExpiryTimestamp(): Date {
+        const expiryTimestamp = new Date();
+        expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + timerLength);
+        return expiryTimestamp;
+    }
 
     const {
         seconds,
-    } = useTimer({ expiryTimestamp, onExpire: timerTrigger });
-    
+        restart,
+        isRunning,
+    } = useTimer({ expiryTimestamp: getExpiryTimestamp(), autoStart: false, onExpire: timerTrigger });
 
-    return (
-        <Card>
+    function startOrResetTimer() {
+        restart(getExpiryTimestamp(), true);
+    }
+    
+    if (isRunning) {
+        return (
             <CardContent>
                 {seconds}
             </CardContent>
-        </Card>
-    )
+        )
+    } else {
+        return (
+            <CardContent>
+                <Button 
+                    variant="contained"
+                    onClick={startOrResetTimer}
+                >
+                    Start Timer
+                </Button>
+            </CardContent>
+        )
+    }
+    
 }
