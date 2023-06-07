@@ -4,6 +4,7 @@ import hole from './gnomes/hole.png'
 import gnome from './gnomes/successes/gnome_one/gnome.png'
 import failSound from './gnomes/hole.png'
 import useSound from 'use-sound';
+import { useState, useEffect } from 'react';
 
 interface GnomeHoleProps {
     timerFinished: boolean;
@@ -17,37 +18,49 @@ export function GnomeHole({
     gnomeChance,
 }: GnomeHoleProps) {
 
+    const [gnomeState, setGnomeState] = useState('none');
+
     const [playFail] = useSound(
-        failSound,
-        {
-            volume: 1,
-            autoplay: true
-        }
+        failSound
     );
+    
+    useEffect(() => {
+        if (timerFinished) {
+            if (gnomeOccurrence(gnomeChance)) {
+                setGnomeState('success');
+            } else {
+                setGnomeState('fail');
+                playFail();
+            }
+        } else {
+            setGnomeState('none');
+        }
+    }, [timerFinished]);
 
     function gnomeOccurrence(gnomeChance: number) {
         const randomNumber = Math.floor(Math.random() * gnomeChance) + 1;
         return randomNumber === gnomeChance;
     }
-    
-    function displayGnome(timerFinished: boolean, gnomeChance: number) {
-        return timerFinished && gnomeOccurrence(gnomeChance);
-    }
-
-    let content = [(<img src={hole} alt="Gnome Hole" />), (<p>Wait for Gnome?</p>)];
-
-    if (displayGnome(timerFinished, gnomeChance)) {
-        content = [((<img src={gnome} alt="A GNOME!" />))];
-    } else if (timerFinished) {
-        content[1] = (<p>Too bad, no gnome today</p>);
-        playFail();
-    }
 
     return (
         <Card>
-            <CardContent>
-                { content }
-            </CardContent>
+            { gnomeState === 'none' && (
+                <CardContent>
+                    <img src={hole} alt="Gnome Hole" />
+                    <p>Wait for Gnome?</p>
+                </CardContent>
+            )}
+            { gnomeState === 'fail' && (
+                <CardContent>
+                    <img src={hole} alt="Gnome Hole" />
+                    <p>Too bad, no gnome today</p>
+                </CardContent>
+            )}
+            { gnomeState === 'success' && (
+                <CardContent>
+                    <img src={gnome} alt="A GNOME!" />
+                </CardContent>
+            )}
         </Card>
     );
 };
