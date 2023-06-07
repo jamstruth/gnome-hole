@@ -13,7 +13,6 @@ function App() {
     <Container className="App">
       <GnomeHole 
         timerFinished={timerFinished}
-        gnomeDirectories={[]}
         audible={false}
         gnomeChance={10}
       />
